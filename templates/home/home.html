@@ -15,6 +15,12 @@
         </ion-refresher>
 
         <section>
+            <button class="button" ng-click="sendMessage()">
+                Default
+            </button>
+        </section>
+
+        <section>
             <div class="list card">
                 <div class="item" ng-repeat="item in photoArray">
                     <h3>{{item.title}}</h3>

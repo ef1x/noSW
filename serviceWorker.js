@@ -23,7 +23,7 @@ var storedCaches = [
 //no listener for that :D
 
 //second step installing
-self.oninstall = function (event) {
+self.addEventListener('installed', function (event) {
     console.log('installed');
 
     event.waitUntil(
@@ -46,49 +46,117 @@ self.oninstall = function (event) {
                 'css/style.css'
             ]);
         }),
-        console.log(caches.keys)
+        console.log(caches)
     );
 
-};
+});
 
 
 //third step, ready to use let's go
-self.onactivate = function (event) {
+self.addEventListener('activated', function (event) {
     // we are good to go!
     console.log('activated');
-    console.log(caches.keys);
+    console.log(caches);
     //check for old caches and remove if updates are in place
     event.waitUntil(
-        caches.keys().then(function(cacheNames) {
+        caches.keys().then(function (cacheNames) {
             return Promise.all(
-                cacheNames.map(function(cacheName) {
+                cacheNames.map(function (cacheName) {
                     if (!/^sw-/.test(cacheName)) {
                         return;
                     }
-                    if (expectedCaches.indexOf(cacheName) == -1) {
+                    if (storedCaches.indexOf(cacheName) == -1) {
                         return caches.delete(cacheName);
                     }
                 })
             );
         })
     );
-};
+});
 
 
 self.addEventListener('fetch', function (event) {
-    console.log('fetched', event);
-    alert('test');
+    var requestURL = new URL(event.request.url);
 
-    event.respondWith(
-        caches.match(event.request.clone()).then(
-            function(response) {
-                console.log(response);
-                return null;
-            }));
+    if (requestURL.hostname == 'api.flickr.com') {
+        event.respondWith(flickrAPIResponse(event.request));
+    }
+    else if (/\.staticflickr\.com$/.test(requestURL.hostname)) {
+        event.respondWith(flickrImageResponse(event.request));
+    }
+    else {
+        event.respondWith(
+            caches.match(event.request, {
+                ignoreVary: true
+            })
+        );
+    }
 });
 
+function flickrAPIResponse(request) {
+    if (request.headers.get('Accept') == 'x-cache/only') {
+        return caches.match(request);
+    }
+    else {
+        return fetch(request.clone()).then(function (response) {
+            return caches.open(CURRENT_PHOTO.photo).then(function (cache) {
+                // clean up the image cache
+                Promise.all([
+                    response.clone().json(),
+                    //caches.open('trains-imgs')
+                ]).then(function (results) {
+                    var data = results[0];
+                    //var imgCache = results[1];
+
+                    //var imgURLs = data.photos.photo.map(function(photo) {
+                    //    return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_c.jpg';
+                    //});
+
+                    //// if an item in the cache *isn't* in imgURLs, delete it
+                    //data.keys().then(function(requests) {
+                    //    requests.forEach(function(request) {
+                    //        if (data.indexOf(request.url) == -1) {
+                    //            imgCache.delete(request);
+                    //        }
+                    //    });
+                    //});
+                });
+
+                cache.put(request, response.clone()).then(function () {
+                    console.log("Yey cache");
+                }, function () {
+                    console.log("Nay cache");
+                });
+
+                return response;
+            });
+        });
+    }
+}
+
+function flickrImageResponse(request) {
+    return caches.match(request).then(function (response) {
+        if (response) {
+            return response;
+        }
+
+        return fetch(request.clone()).then(function (response) {
+            caches.open(CURRENT_PHOTO.photo).then(function (cache) {
+                cache.put(request, response).then(function () {
+                    console.log('yey img cache');
+                }, function () {
+                    console.log('nay img cache');
+                });
+            });
+
+            return response.clone();
+        });
+    });
+}
+
+
 //listen for communication messages
-self.addEventListener('message', function(event) {
+self.addEventListener('message', function (event) {
     console.log('message', event);
 });
 
