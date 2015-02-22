@@ -14,7 +14,7 @@ angular.module('homeService', [])
 
                     var personArray = [];
                     $http
-                        .get('http://swapi.co/api/people')
+                        .get('https://swapi.co/api/people')
                         .success(function (data) {
                             $log.log(data);
                             data.results.forEach(function (entry) {
