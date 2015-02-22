@@ -8,7 +8,8 @@
 angular.module('swApp', [
     'ionic',
     'homeService',
-    'photoModel',
+    'photoService',
+    'personsModel',
     'settingsService',
     'settingsModel'
 ])

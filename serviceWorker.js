@@ -14,9 +14,14 @@ var CURRENT_PHOTO = {
     photo: 'sw-img-cache-1'
 };
 
+var CURRENT_PERSON = {
+    person: 'sw-person-cache-1'
+};
+
 var storedCaches = [
     CURRENT_ASSETS.prefetch,
-    CURRENT_PHOTO.photo
+    CURRENT_PHOTO.photo,
+    CURRENT_PERSON.person
 ];
 
 //first step downloading
@@ -76,55 +81,68 @@ self.addEventListener('activated', function (event) {
 
 
 self.addEventListener('fetch', function (event) {
+
+    //get URL from event
     var requestURL = new URL(event.request.url);
 
-    if (requestURL.hostname == 'api.flickr.com') {
-        event.respondWith(flickrAPIResponse(event.request));
+    //check if URL-hostname equals starwars API
+    if (requestURL.hostname == 'http://swapi.co/api') {
+        event.respondWith(swapiResponse(event.request));
     }
+    // check if URL contains parts of image URL
     else if (/\.staticflickr\.com$/.test(requestURL.hostname)) {
         event.respondWith(flickrImageResponse(event.request));
     }
+
+    //no match? create a promise, check for request in cache, return match
     else {
-        event.respondWith(
-            caches.match(event.request, {
-                ignoreVary: true
+        //caches match return promise, looks for matches in caches
+        caches.match(event.request)
+            .then(function (response) {
+                //if matching response, return cache
+                if (response) {
+                    return response;
+                }
+                //otherwise do fetch request to network if possible
+                return fetch(event.request);
             })
-        );
     }
 });
 
-function flickrAPIResponse(request) {
+function swapiResponse(request) {
+    console.log('swapiResponse', request);
     if (request.headers.get('Accept') == 'x-cache/only') {
         return caches.match(request);
     }
+
     else {
-        return fetch(request.clone()).then(function (response) {
-            return caches.open(CURRENT_PHOTO.photo).then(function (cache) {
+        return fetch(request.clone()).then(function(response) {
+            return caches.open(CURRENT_PERSON.person).then(function(cache) {
                 // clean up the image cache
                 Promise.all([
                     response.clone().json(),
-                    //caches.open('trains-imgs')
-                ]).then(function (results) {
+                    caches.open(CURRENT_PHOTO.photo)
+                ]).then(function(results) {
                     var data = results[0];
-                    //var imgCache = results[1];
+                    var imgCache = results[1];
 
-                    //var imgURLs = data.photos.photo.map(function(photo) {
-                    //    return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_c.jpg';
-                    //});
+                    var imgURLs = data.photos.photo.map(function(photo) {
+                        return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_c.jpg';
+                    });
 
-                    //// if an item in the cache *isn't* in imgURLs, delete it
-                    //data.keys().then(function(requests) {
-                    //    requests.forEach(function(request) {
-                    //        if (data.indexOf(request.url) == -1) {
-                    //            imgCache.delete(request);
-                    //        }
-                    //    });
-                    //});
+                    // if an item in the cache *isn't* in imgURLs, delete it
+                    imgCache.keys().then(function(requests) {
+                        requests.forEach(function(request) {
+                            if (imgURLs.indexOf(request.url) == -1) {
+                                imgCache.delete(request);
+                            }
+                        });
+                    });
                 });
 
-                cache.put(request, response.clone()).then(function () {
+                cache.put(request, response.clone()).then(function() {
                     console.log("Yey cache");
-                }, function () {
+                }, function() {
                     console.log("Nay cache");
                 });
 
@@ -135,16 +153,17 @@ function flickrAPIResponse(request) {
 }
 
 function flickrImageResponse(request) {
-    return caches.match(request).then(function (response) {
+    console.log('flickrRespons', request);
+    return caches.match(request).then(function(response) {
         if (response) {
             return response;
         }
 
-        return fetch(request.clone()).then(function (response) {
-            caches.open(CURRENT_PHOTO.photo).then(function (cache) {
-                cache.put(request, response).then(function () {
+        return fetch(request.clone()).then(function(response) {
+            caches.open(CURRENT_PHOTO.photo).then(function(cache) {
+                cache.put(request, response).then(function() {
                     console.log('yey img cache');
-                }, function () {
+                }, function() {
                     console.log('nay img cache');
                 });
             });

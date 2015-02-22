@@ -5,47 +5,47 @@
  */
 
 angular.module('homeService', [])
-    .service('homeService', ['$rootScope', '$http', '$log', 'photoModel',
-        function ($rootScope, $http, $log, photoModel) {
-
-            var params =
-                    'method=flickr.photos.search&' +
-                    'extras=description&' +
-                    'format=json&' +
-                    'api_key=73c30c1a85af9c8992751f7c46b4cb0c&' +
-                    'text=tree forest&' +
-                    'license=4,5,6,7&' +
-                    'content_type=1&' +
-                    'nojsoncallback=1&' +
-                    'per_page=10'
-                ;
+    .service('homeService', ['$rootScope', '$http', '$log', 'personsModel',
+        function ($rootScope, $http, $log, personsModel) {
 
             var service = {
 
-                getPhotos: function () {
+                getPerson: function () {
 
-                    var photoArray = [];
+                    var personArray = [];
                     $http
-                        .get('https://api.flickr.com/services/rest/?' + params)
+                        .get('http://swapi.co/api/people')
                         .success(function (data) {
                             $log.log(data);
-                            data.photos.photo.forEach(function (entry) {
-                                photoArray.push(new photoModel(
-                                    entry.owner,
-                                    entry.id,
-                                    entry.title,
-                                    entry.description,
-                                    entry.farm,
-                                    entry.server,
-                                    entry.secret))
+                            data.results.forEach(function (entry) {
+
+                                personArray.push(new personsModel(
+                                    entry.birth_year,
+                                    entry.created,
+                                    entry.edited,
+                                    entry.eye_color,
+                                    entry.films,
+                                    entry.gender,
+                                    entry.hair_color,
+                                    entry.height,
+                                    entry.homeworld,
+                                    entry.mass,
+                                    entry.name,
+                                    entry.skin_color,
+                                    entry.species,
+                                    entry.starships,
+                                    entry.url,
+                                    entry.vehicles
+                                ))
                             });
 
-                            $rootScope.$broadcast('photoModels were build', photoArray);
+                            $rootScope.$broadcast('photoModels were build', personArray);
                             $rootScope.$broadcast('scroll.refreshComplete');
                         });
                 }
 
             };
+
             return service;
         }
     ]);
