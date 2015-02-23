@@ -9,30 +9,32 @@ angular.module('personsModel', [])
     .factory('personsModel', ['$rootScope', '$log', 'photoService',
         function ($rootScope, $log, photoService) {
 
+
             /**
              * Constructor, with class name
              */
-            function person(birth_year, created, edited, eye_color,
-                            films, gender, hair_color, height, homeworld, mass,
-                            name, skin_color, species, starships, url, vehicles){
+            //function person(birth_year, created, edited, eye_color,
+            //                films, gender, hair_color, height, homeworld, mass,
+            //                name, skin_color, species, starships, url, vehicles)
+            function person(entry){
 
-                this.birth_year = birth_year;
-                    this.created = created;
-                    this.edited = edited;
-                    this.eye_color = eye_color;
-                    this.films = films;
-                    this.gender = gender;
-                    this.hair_color = hair_color;
-                    this.height = height;
-                    this.homeworld = homeworld;
-                    this.mass = mass;
-                    this.name = name;
-                    this.skin_color = skin_color;
-                    this.species = species;
-                    this.starships = starships;
-                    this.url = url;
-                    this.vehicles = vehicles;
-                    this.img = photoService.getPhotos(name);
+                this.birth_year = entry.birth_year;
+                    this.created = entry.created;
+                    this.edited = entry.edited;
+                    this.eye_color = entry.eye_color;
+                    this.films = entry.films;
+                    this.gender = entry.gender;
+                    this.hair_color = entry.hair_color;
+                    this.height = entry.height;
+                    this.homeworld = entry.homeworld;
+                    this.mass = entry.mass;
+                    this.name = entry.name;
+                    this.skin_color = entry.skin_color;
+                    this.species = entry.species;
+                    this.starships = entry.starships;
+                    this.url = entry.url;
+                    this.vehicles = entry.vehicles;
+                    //this.img = photoService.getPhotos(entry.name);
                 //$log.log(photoService.getPhotos(name));
 
             }
