@@ -35,7 +35,7 @@ if ('serviceWorker' in navigator) {
 
     //register returns a promise
     navigator.serviceWorker.register('serviceWorker.js', {
-        scope: '/'
+        scope: '/basw/'
     }).then(function (reg) {
         console.log('sW registered', reg);
     }).catch(function (err) {
