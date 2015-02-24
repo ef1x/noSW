@@ -30,27 +30,27 @@
     <script src="templates/settings/settingsService.js"></script>
 </head>
 <body ng-app="swApp">
-<script> //check for browser support of service worker and register
-if ('serviceWorker' in navigator) {
+<!--<script> //check for browser support of service worker and register-->
+<!--if ('serviceWorker' in navigator) {-->
 
-    //register returns a promise
-    navigator.serviceWorker.register('serviceWorker.js', {
-        scope: '/basw/'
-    }).then(function (reg) {
-        console.log('sW registered', reg);
-    }).catch(function (err) {
-        console.log('something with the sw went wrong', err);
-    });
-}
-else {
-    console.log('no sW support');
-}
+    <!--//register returns a promise-->
+    <!--navigator.serviceWorker.register('serviceWorker.js', {-->
+        <!--scope: '/basw/'-->
+    <!--}).then(function (reg) {-->
+        <!--console.log('sW registered', reg);-->
+    <!--}).catch(function (err) {-->
+        <!--console.log('something with the sw went wrong', err);-->
+    <!--});-->
+<!--}-->
+<!--else {-->
+    <!--console.log('no sW support');-->
+<!--}-->
 
-window.addEventListener("message", function (e, event) {
-    console.log(e);
-    console.log(event);
-}, false);
-</script>
+<!--window.addEventListener("message", function (e, event) {-->
+    <!--console.log(e);-->
+    <!--console.log(event);-->
+<!--}, false);-->
+<!--</script>-->
 <!--
   The nav bar that will be updated as we navigate between views.
 -->
