@@ -113,43 +113,44 @@ self.addEventListener('fetch', function (event) {
 function swapiResponse(request) {
     console.log('swapiResponse', request);
     if (request.headers.get('Accept') == 'x-cache/only') {
+        console.log('match', caches.match(request));
         return caches.match(request);
     }
 
-    //else {
-    //    return fetch(request.clone()).then(function(response) {
-    //        return caches.open(CURRENT_PERSON.person).then(function(cache) {
-    //            // clean up the image cache
-    //            Promise.all([
-    //                response.clone().json(),
-    //                caches.open(CURRENT_PHOTO.photo)
-    //            ]).then(function(results) {
-    //                var data = results[0];
-    //                var imgCache = results[1];
-    //
-    //                var imgURLs = data.photos.photo.map(function(photo) {
-    //                    return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_c.jpg';
-    //                });
-    //
-    //                // if an item in the cache *isn't* in imgURLs, delete it
-    //                imgCache.keys().then(function(requests) {
-    //                    requests.forEach(function(request) {
-    //                        if (imgURLs.indexOf(request.url) == -1) {
-    //                            imgCache.delete(request);
-    //                        }
-    //                    });
-    //                });
-    //            });
-    //
-    //            cache.put(request, response.clone()).then(function() {
-    //                console.log("Yey cache");
-    //            }, function() {
-    //                console.log("Nay cache");
-    //            });
-    //            return response;
-    //        });
-    //    });
-    //}
+    else {
+        return fetch(request.clone()).then(function(response) {
+            return caches.open(CURRENT_PERSON.person).then(function(cache) {
+                // clean up the image cache
+                //Promise.all([
+                //    response.clone().json(),
+                //    caches.open(CURRENT_PHOTO.photo)
+                //]).then(function(results) {
+                //    var data = results[0];
+                //    var imgCache = results[1];
+                //
+                //    var imgURLs = data.photos.photo.map(function(photo) {
+                //        return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_c.jpg';
+                //    });
+                //
+                //    // if an item in the cache *isn't* in imgURLs, delete it
+                //    imgCache.keys().then(function(requests) {
+                //        requests.forEach(function(request) {
+                //            if (imgURLs.indexOf(request.url) == -1) {
+                //                imgCache.delete(request);
+                //            }
+                //        });
+                //    });
+                //});
+
+                cache.put(request, response.clone()).then(function() {
+                    console.log("Yey cache");
+                }, function() {
+                    console.log("Nay cache");
+                });
+                return response;
+            });
+        });
+    }
 }
 
 //function flickrImageResponse(request) {

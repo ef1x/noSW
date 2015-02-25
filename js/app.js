@@ -27,21 +27,6 @@ angular.module('swApp', [
             }
         });
 
-//check for browser support of service worker and register
-        if ('serviceWorker' in navigator) {
-            console.log('registration started');
-            //register returns a promise
-            navigator.serviceWorker.register('serviceWorker.js', {
-                scope: '/'
-            }).then(function (reg) {
-                console.log('sW registered', reg);
-            }).catch(function (err) {
-                console.log('something with the sw went wrong', err);
-            });
-        }
-        else {
-            console.log('no sW support');
-        }
 
 
     })
