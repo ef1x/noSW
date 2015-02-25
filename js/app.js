@@ -29,14 +29,14 @@ angular.module('swApp', [
 
 //check for browser support of service worker and register
         if ('serviceWorker' in navigator) {
-            $log.log('registration started');
+            console.log('registration started');
             //register returns a promise
             navigator.serviceWorker.register('serviceWorker.js', {
                 scope: '/'
             }).then(function (reg) {
-                $log.log('sW registered', reg);
+                console.log('sW registered', reg);
             }).catch(function (err) {
-                $log.log('something with the sw went wrong', err);
+                console.log('something with the sw went wrong', err);
             });
         }
         else {
