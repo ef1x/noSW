@@ -85,7 +85,7 @@ self.addEventListener('fetch', function (event) {
 
     //check if URL-hostname equals starwars API
     if (requestURL.hostname == 'swapi.co') {
-        console.log('swapi', requestURL.hostname);
+        console.log('swapi response', event.respondWith(swapiResponse(event.request)));
         event.respondWith(swapiResponse(event.request));
     }
     //// check if URL contains parts of image URL
