@@ -85,7 +85,7 @@ self.addEventListener('fetch', function (event) {
     console.log(requestURL);
 
     //check if URL-hostname equals starwars API
-    if (requestURL.hostname == 'https://swapi.com/api') {
+    if (requestURL.hostname == 'https://swapi.co/api') {
         console.log('swapi', requestURL.hostname);
         event.respondWith(swapiResponse(event.request));
     }
