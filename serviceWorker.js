@@ -28,7 +28,7 @@ var storedCaches = [
 //no listener for that :D
 
 //second step installing
-self.addEventListener('installed', function (event) {
+self.addEventListener('install', function (event) {
     console.log('installed');
 
     event.waitUntil(
@@ -50,15 +50,13 @@ self.addEventListener('installed', function (event) {
                 'templates/settings/settings.html',
                 'css/style.css'
             ]);
-        }),
-        console.log(caches)
+        })
     );
-
 });
 
 
 //third step, ready to use let's go
-self.addEventListener('activated', function (event) {
+self.addEventListener('activate', function (event) {
     // we are good to go!
     console.log('activated');
     console.log(caches);
@@ -81,16 +79,20 @@ self.addEventListener('activated', function (event) {
 
 
 self.addEventListener('fetch', function (event) {
-
+    console.log(event);
     //get URL from event
     var requestURL = new URL(event.request.url);
+    console.log(requestURL);
 
     //check if URL-hostname equals starwars API
-    if (requestURL.hostname == 'http://swapi.co/api') {
+    if (requestURL.hostname == 'https://swapi.com/api') {
+        console.log('swapi', requestURL.hostname);
         event.respondWith(swapiResponse(event.request));
     }
     // check if URL contains parts of image URL
     else if (/\.staticflickr\.com$/.test(requestURL.hostname)) {
+        console.log('flikr', requestURL.hostname);
+
         event.respondWith(flickrImageResponse(event.request));
     }
 
@@ -145,7 +147,6 @@ function swapiResponse(request) {
                 }, function() {
                     console.log("Nay cache");
                 });
-
                 return response;
             });
         });
