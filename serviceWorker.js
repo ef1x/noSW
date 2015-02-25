@@ -45,7 +45,6 @@ self.addEventListener('install', function (event) {
                 'templates/home/home.html',
                 'templates/home/homeController.js',
                 'templates/home/homeService.js',
-                'templates/home/photoModel.js',
                 'templates/menu/menu.html',
                 'templates/settings/settings.html',
                 'css/style.css'
