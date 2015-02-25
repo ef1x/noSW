@@ -85,7 +85,7 @@ self.addEventListener('fetch', function (event) {
 
     //check if URL-hostname equals starwars API
     if (requestURL.hostname == 'swapi.co') {
-        console.log('swapi response', event.respondWith(swapiResponse(event.request)));
+        //console.log('swapi response', event.respondWith(swapiResponse(event.request)));
         event.respondWith(swapiResponse(event.request));
     }
     //// check if URL contains parts of image URL
@@ -111,7 +111,8 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapiResponse', request);
+    console.log('swapi request', request);
+    console.log('swapi requestheader', request.headers.get());
     if (request.headers.get('Accept') == 'x-cache/only') {
         console.log('match', caches.match(request));
         return caches.match(request);
