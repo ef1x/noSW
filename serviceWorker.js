@@ -111,10 +111,12 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapi requestheader', request.headers.get('Accept'));
+    console.log('swapi requestheader', request.headers.get('Status Code'));
 
     console.log('swapi request', request);
-    if (request.headers.get('Accept') == 'application/json') {
+
+    //check if .... return stored response
+    if (request.headers.get('Status Code') == null) {
         console.log('match', caches.match(request));
         return caches.match(request);
     }
