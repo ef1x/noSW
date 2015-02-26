@@ -4,7 +4,7 @@
  * All rights reserved
  */
 
-importScripts('js/serviceworker-cache-polyfill.js');
+//importScripts('js/serviceworker-cache-polyfill.js');
 
 
 var CURRENT_ASSETS = {
