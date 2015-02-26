@@ -109,7 +109,7 @@ self.addEventListener('fetch', function (event) {
                     caches.open(CURRENT_ASSETS.dynamic).then(function(cache) {
                         return fetch(event.request.clone()).then(function(response) {
                             cache.put(event.request, response.clone());
-                            console.log('fetch to network', event.request);
+                            console.log('new request cached', event.request);
                             return response;
                         });
                     })
@@ -143,7 +143,7 @@ function swapiResponse(request) {
 
                 cache.put(cacheRequest, cacheResponse)
                     .then(function () {
-                        console.log("new response to cache", cacheRequest, cacheResponse);
+                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
                     })
                     .catch(function () {
                         console.log("failed to cache");
