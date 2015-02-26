@@ -8,7 +8,8 @@ importScripts('js/serviceworker-cache-polyfill.js');
 
 
 var CURRENT_ASSETS = {
-    prefetch: 'sw-prefetch-cache-1'
+    prefetch: 'sw-prefetch-cache-1',
+    dynamic: 'sw-dynamic-cache-1'
 };
 var CURRENT_PHOTO = {
     photo: 'sw-img-cache-1'
@@ -21,7 +22,7 @@ var CURRENT_PERSON = {
 var storedCaches = [
     CURRENT_ASSETS.prefetch,
     CURRENT_PHOTO.photo,
-    CURRENT_PERSON.person
+    CURRENT_PERSON.person,
 ];
 
 //first step downloading
@@ -106,9 +107,18 @@ self.addEventListener('fetch', function (event) {
                     console.log('match with cache', response);
                     return response;
                 }
+                else {
+                    caches.open(CURRENT_ASSETS.dynamic).then(function(cache) {
+                        return fetch(event.request.clone()).then(function(response) {
+                            cache.put(event.request, response.clone());
+                            console.log('fetch to network');
+                            return response;
+                        });
+                    })
+                }
                 //otherwise return fetch request to network if possible
-                console.log('fetch to network');
-                return fetch(event.request);
+
+                //return fetch(event.request);
             })
     }
 });
