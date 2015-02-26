@@ -81,22 +81,13 @@ self.addEventListener('activate', function (event) {
 
 
 self.addEventListener('fetch', function (event) {
-    console.log(event);
     //get URL from event
     var requestURL = new URL(event.request.url);
-    console.log(requestURL);
 
     //check if URL-hostname equals starwars API
     if (requestURL.hostname == 'swapi.co') {
-        //console.log('swapi response', event.respondWith(swapiResponse(event.request)));
         event.respondWith(swapiResponse(event.request));
     }
-    //// check if URL contains parts of image URL
-    //else if (/\.staticflickr\.com$/.test(requestURL.hostname)) {
-    //    console.log('flikr', requestURL.hostname);
-    //
-    //    event.respondWith(flickrImageResponse(event.request));
-    //}
 
     //no match? create a promise, check for request in cache, return match
     else {
@@ -110,13 +101,18 @@ self.addEventListener('fetch', function (event) {
                     event.respondWith(response);
                 }
                 else {
-                    caches.open(CURRENT_ASSETS.dynamic).then(function(cache) {
-                        return fetch(event.request.clone()).then(function(response) {
-                            cache.put(event.request, response.clone());
-                            console.log('new request cached', event.request);
-                            return response;
-                        });
-                    })
+                    //caches match return promise, looks for matches in caches
+                    caches.match(event.request)
+                        .then(function (response) {
+                            //if matching response, return cache
+                            if (response) {
+                                console.log('match with cache');
+                                return response;
+                            }
+                            //otherwise return fetch request to network if possible
+                            console.log('fetch to network');
+                            return fetch(event.request);
+                        })
                 }
                 //otherwise return fetch request to network if possible
 
