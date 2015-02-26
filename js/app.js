@@ -44,8 +44,7 @@ angular.module('swApp', [
             .state('app', {
                 url: "/app",
                 abstract: true,
-                templateUrl: "templates/menu/menu.html",
-                controller: 'menuCtrl'
+                templateUrl: "templates/menu/menu.html"
             })
 
             .state('app.home', {
@@ -56,7 +55,7 @@ angular.module('swApp', [
                         controller: 'homeCtrl'
                     }
                 }
-            })
+            });
 
 
         // if none of the above states are matched, use this as the fallback
