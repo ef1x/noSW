@@ -110,9 +110,8 @@ self.addEventListener('fetch', function (event) {
 
     else {
         event.respondWith(
-            caches.match(event.request, {
-                ignoreVary: true
-            })
+            caches.match(event.request)
+
         );
     }
 });
