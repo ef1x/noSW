@@ -103,7 +103,7 @@ self.addEventListener('fetch', function (event) {
             .then(function (response) {
                 //if matching response, return cache
                 if (response) {
-                    console.log('match with cache');
+                    console.log('match with cache', response);
                     return response;
                 }
                 //otherwise return fetch request to network if possible
@@ -126,16 +126,20 @@ function swapiResponse(request) {
     }
 
     else {
-        return fetch(request.clone()).then(function(response) {
-            return caches.open(CURRENT_PERSON.person).then(function(cache) {
+        return fetch(request.clone()).then(function (response) {
+            return caches.open(CURRENT_PERSON.person).then(function (cache) {
 
-                cache.put(request, response.clone())
-                    .then(function() {
-                    console.log("Yey cache");
-                })
-                    .catch(function() {
-                    console.log("Nay cache");
-                });
+                // We're a stream: if you don't clone, bad things happen
+                var cacheRequest = request.clone();
+                var cacheResponse = response.clone();
+
+                cache.put(cacheRequest, cacheResponse)
+                    .then(function () {
+                        console.log("new response to cache", cacheRequest, cacheResponse);
+                    })
+                    .catch(function () {
+                        console.log("failed to cache");
+                    });
                 return response;
             });
         });
