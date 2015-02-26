@@ -106,7 +106,8 @@ self.addEventListener('fetch', function (event) {
                 //if matching response, return cache
                 if (response) {
                     console.log('match with cache', response);
-                    return response;
+                    //return response;
+                    event.respondWith(response);
                 }
                 else {
                     caches.open(CURRENT_ASSETS.dynamic).then(function(cache) {
