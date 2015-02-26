@@ -115,9 +115,8 @@ function swapiResponse(request) {
     console.log('swapi requestheader', request.headers.get('statusCode'));
 
     console.log('swapi request', request);
-    console.log('online?', navigator.onLine);
 
-    //check if .... return stored response
+    //check if internet connection, return stored response
     //if (request.headers.get('statusCode') == null) {
     if (navigator.onLine == false) {
         console.log('match', caches.match(request));
