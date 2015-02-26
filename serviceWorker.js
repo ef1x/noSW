@@ -111,7 +111,7 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapi requestheader', request.headers.get('Status Code'));
+    console.log('swapi requestheader', request.headers);
 
     console.log('swapi request', request);
 
