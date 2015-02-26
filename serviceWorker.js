@@ -114,7 +114,7 @@ function swapiResponse(request) {
     console.log('swapi requestheader', request.headers.get('Accept'));
 
     console.log('swapi request', request);
-    if (request.headers.get('Accept') == 'application/json') {
+    if (request.headers.get('Accept') == 'application/json, text/plain, */*') {
         console.log('match', caches.match(request));
         return caches.match(request);
     }
