@@ -111,8 +111,6 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapi requestheader', request.headers.get('Accept'));
-
     console.log('swapi request', request);
     if (request.headers.get('Accept') == 'application/json, text/plain, */*') {
         console.log('match', caches.match(request));
@@ -122,27 +120,6 @@ function swapiResponse(request) {
     else {
         return fetch(request.clone()).then(function(response) {
             return caches.open(CURRENT_PERSON.person).then(function(cache) {
-                // clean up the image cache
-                //Promise.all([
-                //    response.clone().json(),
-                //    caches.open(CURRENT_PHOTO.photo)
-                //]).then(function(results) {
-                //    var data = results[0];
-                //    var imgCache = results[1];
-                //
-                //    var imgURLs = data.photos.photo.map(function(photo) {
-                //        return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_c.jpg';
-                //    });
-                //
-                //    // if an item in the cache *isn't* in imgURLs, delete it
-                //    imgCache.keys().then(function(requests) {
-                //        requests.forEach(function(request) {
-                //            if (imgURLs.indexOf(request.url) == -1) {
-                //                imgCache.delete(request);
-                //            }
-                //        });
-                //    });
-                //});
 
                 cache.put(request, response.clone()).then(function() {
                     console.log("Yey cache");
@@ -154,27 +131,6 @@ function swapiResponse(request) {
         });
     }
 }
-
-//function flickrImageResponse(request) {
-//    console.log('flickrRespons', request);
-//    return caches.match(request).then(function(response) {
-//        if (response) {
-//            return response;
-//        }
-//
-//        return fetch(request.clone()).then(function(response) {
-//            caches.open(CURRENT_PHOTO.photo).then(function(cache) {
-//                cache.put(request, response).then(function() {
-//                    console.log('yey img cache');
-//                }, function() {
-//                    console.log('nay img cache');
-//                });
-//            });
-//
-//            return response.clone();
-//        });
-//    });
-//}
 
 
 //listen for communication messages
