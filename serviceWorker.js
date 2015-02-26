@@ -111,12 +111,12 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapi requestheader', request.headers);
+    console.log('swapi requestheader', request.headers.get('statusCode'));
 
     console.log('swapi request', request);
 
     //check if .... return stored response
-    if (request.headers.get('Status Code') == null) {
+    if (request.headers.get('statusCode') == null) {
         console.log('match', caches.match(request));
         return caches.match(request);
     }
@@ -125,10 +125,11 @@ function swapiResponse(request) {
         return fetch(request.clone()).then(function(response) {
             return caches.open(CURRENT_PERSON.person).then(function(cache) {
 
-
-                cache.put(request, response.clone()).then(function() {
+                cache.put(request, response.clone())
+                    .then(function() {
                     console.log("Yey cache");
-                }, function() {
+                })
+                    .catch(function() {
                     console.log("Nay cache");
                 });
                 return response;
