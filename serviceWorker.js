@@ -96,17 +96,25 @@ self.addEventListener('fetch', function (event) {
     //}
 
     //no match? create a promise, check for request in cache, return match
+    //else {
+    //    //caches match return promise, looks for matches in caches
+    //    caches.match(event.request)
+    //        .then(function (response) {
+    //            //if matching response, return cache
+    //            if (response) {
+    //                return response;
+    //            }
+    //            //otherwise do fetch request to network if possible
+    //            return fetch(event.request);
+    //        })
+    //}
+
     else {
-        //caches match return promise, looks for matches in caches
-        caches.match(event.request)
-            .then(function (response) {
-                //if matching response, return cache
-                if (response) {
-                    return response;
-                }
-                //otherwise do fetch request to network if possible
-                return fetch(event.request);
+        event.respondWith(
+            caches.match(event.request, {
+                ignoreVary: true
             })
+        );
     }
 });
 

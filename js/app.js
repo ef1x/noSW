@@ -9,9 +9,7 @@ angular.module('swApp', [
     'ionic',
     'homeService',
     'photoService',
-    'personsModel',
-    'settingsService',
-    'settingsModel'
+    'personsModel'
 ])
 
     .run(function ($ionicPlatform) {
@@ -50,16 +48,6 @@ angular.module('swApp', [
                 controller: 'menuCtrl'
             })
 
-            //.state('app.login', {
-            //    url: '/login',
-            //    views: {
-            //        'menuContent': {
-            //            templateUrl: 'templates/login/login.html',
-            //            controller: 'loginCtrl'
-            //        }
-            //    }
-            //})
-
             .state('app.home', {
                 url: '/home',
                 views: {
@@ -69,16 +57,6 @@ angular.module('swApp', [
                     }
                 }
             })
-
-            .state('app.settings', {
-                url: '/settings',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/settings/settings.html',
-                        controller: 'settingsCtrl'
-                    }
-                }
-            });
 
 
         // if none of the above states are matched, use this as the fallback
