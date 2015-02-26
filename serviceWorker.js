@@ -111,8 +111,10 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
+    console.log('swapi requestheader', request.headers.get('Accept'));
+
     console.log('swapi request', request);
-    if (request.headers.get('Accept') == 'application/json, text/plain, */*') {
+    if (request.headers.get('Accept') == 'application/json') {
         console.log('match', caches.match(request));
         return caches.match(request);
     }
@@ -120,6 +122,7 @@ function swapiResponse(request) {
     else {
         return fetch(request.clone()).then(function(response) {
             return caches.open(CURRENT_PERSON.person).then(function(cache) {
+
 
                 cache.put(request, response.clone()).then(function() {
                     console.log("Yey cache");
@@ -131,6 +134,8 @@ function swapiResponse(request) {
         });
     }
 }
+
+
 
 
 //listen for communication messages
