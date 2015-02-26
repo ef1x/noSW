@@ -111,10 +111,10 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapi requestheader', request.headers.get());
+    console.log('swapi requestheader', request.headers.get('Accept'));
 
     console.log('swapi request', request);
-    if (request.headers.get('Accept') == 'x-cache/only') {
+    if (request.headers.get('Accept') == 'application/json') {
         console.log('match', caches.match(request));
         return caches.match(request);
     }
