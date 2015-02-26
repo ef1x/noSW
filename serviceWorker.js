@@ -39,13 +39,16 @@ self.addEventListener('install', function (event) {
                 'index.html',
                 'js/app.js',
                 'js/serviceworker-cache-polyfill.js',
-                'lib/ionic/css/ionic.min.css',
-                'lib/ionic/js/ionic.bundle.min.js',
+                'lib/ionic/css/ionic.css',
+                'lib/ionic/js/ionic.bundle.js',
                 'lib/ionic/js/ionic.min.js',
                 'lib/ionic/js/ionic-angular.min.js',
+                'lib/ionic/fonts/ionicons.ttf?v=1.5.2',
                 'templates/home/home.html',
                 'templates/home/homeController.js',
                 'templates/home/homeService.js',
+                'templates/home/personsModel.js',
+                'templates/home/photoService.js',
                 'templates/menu/menu.html',
                 'css/style.css'
             ]);
