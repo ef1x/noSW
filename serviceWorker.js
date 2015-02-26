@@ -97,8 +97,8 @@ self.addEventListener('fetch', function (event) {
                 //if matching response, return cache
                 if (response) {
                     console.log('match with cache', response);
-                    //return response;
-                    event.respondWith(response);
+                    return response;
+                    //event.respondWith(response);
                 }
                 else {
                     //caches match return promise, looks for matches in caches
