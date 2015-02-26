@@ -97,7 +97,9 @@ self.addEventListener('fetch', function (event) {
     //no match? create a promise, check for request in cache, return match
     else {
         //caches match return promise, looks for matches in caches
-        caches.match(event.request)
+        caches.match(event.request, {
+            ignoreVary: true
+        })
             .then(function (response) {
                 //if matching response, return cache
                 if (response) {
@@ -139,9 +141,6 @@ function swapiResponse(request) {
         });
     }
 }
-
-
-
 
 //listen for communication messages
 self.addEventListener('message', function (event) {
