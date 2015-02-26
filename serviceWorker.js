@@ -111,7 +111,7 @@ self.addEventListener('fetch', function (event) {
                     caches.open(CURRENT_ASSETS.dynamic).then(function(cache) {
                         return fetch(event.request.clone()).then(function(response) {
                             cache.put(event.request, response.clone());
-                            console.log('fetch to network');
+                            console.log('fetch to network', event.request);
                             return response;
                         });
                     })
