@@ -100,36 +100,28 @@ self.addEventListener('fetch', function (event) {
 
     //no match? create a promise, check for request in cache, return match
     else {
-
-            event.respondWith(
-                caches.match(event.request, {
-                    ignoreVary: true
-                })
-            );
-
         //caches match return promise, looks for matches in caches
-        //event.respondWith(caches.match(event.request)
-                //.then(function (response) {
-                //    //if matching response, return cache
-                //    if (response) {
-                //        console.log('match with cache', response);
-                //        //return response;
-                //
-                //    }
-                //    else {
-                //        caches.open(CURRENT_ASSETS.dynamic).then(function (cache) {
-                //            return fetch(event.request.clone()).then(function (response) {
-                //                cache.put(event.request, response.clone());
-                //                console.log('new request cached', event.request);
-                //                return response;
-                //            });
-                //        })
-                //    }
-                //    //otherwise return fetch request to network if possible
-                //
-                //    //return fetch(event.request);
-                //})
-        //)
+        caches.match(event.request)
+            .then(function (response) {
+                //if matching response, return cache
+                if (response) {
+                    console.log('match with cache', response);
+                    //return response;
+                    event.respondWith(response);
+                }
+                else {
+                    caches.open(CURRENT_ASSETS.dynamic).then(function(cache) {
+                        return fetch(event.request.clone()).then(function(response) {
+                            cache.put(event.request, response.clone());
+                            console.log('new request cached', event.request);
+                            return response;
+                        });
+                    })
+                }
+                //otherwise return fetch request to network if possible
+
+                //return fetch(event.request);
+            })
     }
 });
 
