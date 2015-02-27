@@ -93,54 +93,27 @@ self.addEventListener('fetch', function (event) {
     else {
 
         event.respondWith(staticResponse(event.request));
-        //caches match return promise, looks for matches in caches
-        //caches.match(event.request)
-        //    .then(function (response) {
-        //        //if matching response, return cache
-        //        if (response) {
-        //            console.log('match with cache', response);
-        //            return response;
-        //            //event.respondWith(response);
-        //        }
-        //        else {
-        //            //caches match return promise, looks for matches in caches
-        //            caches.match(event.request)
-        //                .then(function (response) {
-        //                    //if matching response, return cache
-        //                    if (response) {
-        //                        console.log('match with cache');
-        //                        return response;
-        //                    }
-        //                    //otherwise return fetch request to network if possible
-        //                    console.log('fetch to network');
-        //                    return fetch(event.request);
-        //                })
-        //        }
-        //        //otherwise return fetch request to network if possible
-        //
-        //        //return fetch(event.request);
-        //    })
     }
 });
 
 function staticResponse(request) {
     console.log('staticRequest', request);
-    caches.match(request)
-        .then(function (response) {
-            //if matching response, return cache
-            if (response) {
-                console.log('match with cache', response);
-                return response;
-                //event.respondWith(response);
-            }
-            else {
-
-                        //otherwise return fetch request to network if possible
-                        console.log('fetch to network');
-                        return fetch(request);
-
-            }
-        })
+    return caches.match(request);
+        //.then(function (response) {
+        //    //if matching response, return cache
+        //    if (response) {
+        //        console.log('match with cache', response);
+        //        return response;
+        //        //event.respondWith(response);
+        //    }
+        //    else {
+        //
+        //                //otherwise return fetch request to network if possible
+        //                console.log('fetch to network');
+        //                return fetch(request);
+        //
+        //    }
+        //})
 }
 
 function swapiResponse(request) {
