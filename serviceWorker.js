@@ -137,7 +137,7 @@ function staticResponse(request) {
 
                         //otherwise return fetch request to network if possible
                         console.log('fetch to network');
-                        return fetch(event.request);
+                        return fetch(request);
 
             }
         })
