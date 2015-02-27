@@ -125,7 +125,7 @@ self.addEventListener('fetch', function (event) {
 
 function staticResponse(request) {
     console.log('staticRequest', request);
-    caches.match(event.request)
+    caches.match(request)
         .then(function (response) {
             //if matching response, return cache
             if (response) {
@@ -134,18 +134,11 @@ function staticResponse(request) {
                 //event.respondWith(response);
             }
             else {
-                //caches match return promise, looks for matches in caches
-                caches.match(event.request)
-                    .then(function (response) {
-                        //if matching response, return cache
-                        if (response) {
-                            console.log('match with cache');
-                            return response;
-                        }
+
                         //otherwise return fetch request to network if possible
                         console.log('fetch to network');
                         return fetch(event.request);
-                    })
+
             }
         })
 }
