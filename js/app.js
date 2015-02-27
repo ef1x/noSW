@@ -24,15 +24,11 @@ angular.module('swApp', [
                 StatusBar.styleDefault();
             }
         });
-
-
-
     })
 
     .config(function ($stateProvider, $urlRouterProvider, $logProvider) {
 
-
-            $logProvider.debugEnabled(true);
+        $logProvider.debugEnabled(true);
 
         // Ionic uses AngularUI Router which uses the concept of states
         // Learn more here: https://github.com/angular-ui/ui-router
@@ -56,7 +52,6 @@ angular.module('swApp', [
                     }
                 }
             });
-
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');

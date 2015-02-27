@@ -6,7 +6,6 @@
 
 importScripts('js/serviceworker-cache-polyfill.js');
 
-
 var CURRENT_ASSETS = {
     prefetch: 'sw-prefetch-cache-1',
     dynamic: 'sw-dynamic-cache-1'
@@ -22,7 +21,7 @@ var CURRENT_PERSON = {
 var storedCaches = [
     CURRENT_ASSETS.prefetch,
     CURRENT_PHOTO.photo,
-    CURRENT_PERSON.person,
+    CURRENT_PERSON.person
 ];
 
 //first step downloading
@@ -57,7 +56,6 @@ self.addEventListener('install', function (event) {
     );
 });
 
-
 //third step, ready to use let's go
 self.addEventListener('activate', function (event) {
     // we are good to go!
@@ -91,7 +89,7 @@ self.addEventListener('fetch', function (event) {
         event.respondWith(swapiResponse(event.request));
     }
 
-    //no match? create a promise, check for request in cache, return match
+    //no match? create a promise, check for request in cache, return response
 
     else {
         event.respondWith(
@@ -107,14 +105,12 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-    console.log('swapi requestheader', request.headers.get('statusCode'));
-
-    console.log('swapi request', request);
+    console.log('swapiResponse request:', request);
 
     //check if internet connection, return stored response
     //if (request.headers.get('statusCode') == null) {
     if (navigator.onLine == false) {
-        console.log('match', caches.match(request));
+        console.log('swapiResponse match:', caches.match(request));
         return caches.match(request);
     }
 
@@ -138,10 +134,5 @@ function swapiResponse(request) {
         });
     }
 }
-
-//listen for communication messages
-self.addEventListener('message', function (event) {
-    console.log('message', event);
-});
 
 

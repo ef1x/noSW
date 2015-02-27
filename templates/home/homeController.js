@@ -16,7 +16,6 @@ angular.module('swApp')
                 })
             });
 
-
             $scope.getPerson()
         }
     ])
