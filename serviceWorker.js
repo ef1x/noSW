@@ -90,9 +90,17 @@ self.addEventListener('fetch', function (event) {
     }
 
     //no match? create a promise, check for request in cache, return match
-    else {
+    //else {
+    //
+    //    event.respondWith(staticResponse(event.request));
+    //}
 
-        event.respondWith(staticResponse(event.request));
+    else {
+        event.respondWith(
+            caches.match(event.request, {
+                ignoreVary: true
+            })
+        );
     }
 });
 
