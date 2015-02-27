@@ -125,7 +125,29 @@ self.addEventListener('fetch', function (event) {
 
 function staticResponse(request) {
     console.log('staticRequest', request);
-    return caches.match(request);
+    caches.match(event.request)
+        .then(function (response) {
+            //if matching response, return cache
+            if (response) {
+                console.log('match with cache', response);
+                return response;
+                //event.respondWith(response);
+            }
+            else {
+                //caches match return promise, looks for matches in caches
+                caches.match(event.request)
+                    .then(function (response) {
+                        //if matching response, return cache
+                        if (response) {
+                            console.log('match with cache');
+                            return response;
+                        }
+                        //otherwise return fetch request to network if possible
+                        console.log('fetch to network');
+                        return fetch(event.request);
+                    })
+            }
+        })
 }
 
 function swapiResponse(request) {
