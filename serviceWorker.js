@@ -125,6 +125,7 @@ self.addEventListener('fetch', function (event) {
 
 function staticResponse(request) {
     console.log('staticRequest', request);
+    return caches.match(request);
 }
 
 function swapiResponse(request) {
