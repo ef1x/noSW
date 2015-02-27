@@ -38,13 +38,13 @@ angular.module('swApp', [
 
             // setup an abstract state for the tabs directive
             .state('app', {
-                //url: "/app",
+                url: "/app",
                 abstract: true,
                 templateUrl: "templates/menu/menu.html"
             })
 
             .state('app.home', {
-                //url: '/home',
+                url: '/home',
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/home/home.html',
