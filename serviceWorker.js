@@ -35,6 +35,7 @@ self.addEventListener('install', function (event) {
     event.waitUntil(
         //cach stuff
         caches.open(CURRENT_ASSETS.prefetch).then(function (cache) {
+            console.log(cache);
             return cache.addAll([
                 'index.html',
                 'js/app.js',
@@ -71,6 +72,7 @@ self.addEventListener('activate', function (event) {
                         return;
                     }
                     if (storedCaches.indexOf(cacheName) == -1) {
+                        console.log('cache deleted', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -90,10 +92,6 @@ self.addEventListener('fetch', function (event) {
     }
 
     //no match? create a promise, check for request in cache, return match
-    //else {
-    //
-    //    event.respondWith(staticResponse(event.request));
-    //}
 
     else {
         event.respondWith(
@@ -106,26 +104,6 @@ self.addEventListener('fetch', function (event) {
         );
     }
 });
-
-//function staticResponse(request) {
-//    console.log('staticRequest', request);
-//    return caches.match(request);
-//        //.then(function (response) {
-//        //    //if matching response, return cache
-//        //    if (response) {
-//        //        console.log('match with cache', response);
-//        //        return response;
-//        //        //event.respondWith(response);
-//        //    }
-//        //    else {
-//        //
-//        //                //otherwise return fetch request to network if possible
-//        //                console.log('fetch to network');
-//        //                return fetch(request);
-//        //
-//        //    }
-//        //})
-//}
 
 function swapiResponse(request) {
     console.log('swapi requestheader', request.headers.get('statusCode'));
