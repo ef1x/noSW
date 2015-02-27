@@ -104,25 +104,25 @@ self.addEventListener('fetch', function (event) {
     }
 });
 
-function staticResponse(request) {
-    console.log('staticRequest', request);
-    return caches.match(request);
-        //.then(function (response) {
-        //    //if matching response, return cache
-        //    if (response) {
-        //        console.log('match with cache', response);
-        //        return response;
-        //        //event.respondWith(response);
-        //    }
-        //    else {
-        //
-        //                //otherwise return fetch request to network if possible
-        //                console.log('fetch to network');
-        //                return fetch(request);
-        //
-        //    }
-        //})
-}
+//function staticResponse(request) {
+//    console.log('staticRequest', request);
+//    return caches.match(request);
+//        //.then(function (response) {
+//        //    //if matching response, return cache
+//        //    if (response) {
+//        //        console.log('match with cache', response);
+//        //        return response;
+//        //        //event.respondWith(response);
+//        //    }
+//        //    else {
+//        //
+//        //                //otherwise return fetch request to network if possible
+//        //                console.log('fetch to network');
+//        //                return fetch(request);
+//        //
+//        //    }
+//        //})
+//}
 
 function swapiResponse(request) {
     console.log('swapi requestheader', request.headers.get('statusCode'));
