@@ -97,8 +97,11 @@ self.addEventListener('fetch', function (event) {
 
     else {
         event.respondWith(
-            caches.match(event.request, {
-                ignoreVary: true
+            caches.open(CURRENT_ASSETS.prefetch).then(function(cache) {
+                return fetch(event.request.clone()).then(function(response) {
+                    cache.put(event.request, response.clone());
+                    return response;
+                });
             })
         );
     }
