@@ -91,35 +91,41 @@ self.addEventListener('fetch', function (event) {
 
     //no match? create a promise, check for request in cache, return match
     else {
-        //caches match return promise, looks for matches in caches
-        caches.match(event.request)
-            .then(function (response) {
-                //if matching response, return cache
-                if (response) {
-                    console.log('match with cache', response);
-                    return response;
-                    //event.respondWith(response);
-                }
-                else {
-                    //caches match return promise, looks for matches in caches
-                    caches.match(event.request)
-                        .then(function (response) {
-                            //if matching response, return cache
-                            if (response) {
-                                console.log('match with cache');
-                                return response;
-                            }
-                            //otherwise return fetch request to network if possible
-                            console.log('fetch to network');
-                            return fetch(event.request);
-                        })
-                }
-                //otherwise return fetch request to network if possible
 
-                //return fetch(event.request);
-            })
+        event.respondWith(staticResponse(event.request));
+        //caches match return promise, looks for matches in caches
+        //caches.match(event.request)
+        //    .then(function (response) {
+        //        //if matching response, return cache
+        //        if (response) {
+        //            console.log('match with cache', response);
+        //            return response;
+        //            //event.respondWith(response);
+        //        }
+        //        else {
+        //            //caches match return promise, looks for matches in caches
+        //            caches.match(event.request)
+        //                .then(function (response) {
+        //                    //if matching response, return cache
+        //                    if (response) {
+        //                        console.log('match with cache');
+        //                        return response;
+        //                    }
+        //                    //otherwise return fetch request to network if possible
+        //                    console.log('fetch to network');
+        //                    return fetch(event.request);
+        //                })
+        //        }
+        //        //otherwise return fetch request to network if possible
+        //
+        //        //return fetch(event.request);
+        //    })
     }
 });
+
+function staticResponse(request) {
+    console.log('staticRequest', request);
+}
 
 function swapiResponse(request) {
     console.log('swapi requestheader', request.headers.get('statusCode'));
