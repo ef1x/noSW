@@ -1,0 +1,42 @@
+<ion-view title="Test App">
+
+    <ion-nav-bar class="bar bar-header bar-dark">
+        <ion-nav-buttons>
+            <button menu-toggle="left" class="button button-icon">
+                <i class="ion-navicon-round"></i>
+            </button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+
+    <!--Der Infinite Scroll funktioniert mit einem Normalen Array schon-->
+    <ion-content class="has-header">
+
+        <ion-refresher pulling-text="Pull to refresh" on-refresh="getPerson()">
+        </ion-refresher>
+
+
+        <section>
+            <div class="list card">
+                <div class="person" ng-repeat="person in personsArray">
+                    <h3>{{person.name}}</h3>
+                    <div>
+                        <img ng-src="{{ person.img.url }}">
+                    </div>
+                        <ion-list>
+                            <ion-person class="item item-divider">
+                                Year of birth: {{person.birth_year}}
+                            </ion-person>
+                            <ion-person class="item item-divider">
+                                gender:  {{person.gender}}
+                            </ion-person>
+                            <ion-person class="item item-divider">
+                                height: {{person.height}}
+                            </ion-person>
+                        </ion-list>
+
+                </div>
+            </div>
+        </section>
+    </ion-content>
+
+</ion-view>
