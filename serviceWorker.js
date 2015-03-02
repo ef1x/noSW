@@ -8,7 +8,6 @@ importScripts('js/serviceworker-cache-polyfill.js');
 
 var CURRENT_ASSETS = {
     prefetch: 'sw-prefetch-cache-1'
-    //dynamic: 'sw-dynamic-cache-1'
 };
 var CURRENT_PHOTO = {
     photo: 'sw-img-cache-1',
@@ -45,10 +44,10 @@ self.addEventListener('install', function (event) {
                 'lib/ionic/js/ionic.min.js',
                 'lib/ionic/js/ionic-angular.min.js',
                 'lib/ionic/fonts/ionicons.ttf?v=1.5.2',
+                'lib/angular-resource.js',
                 'templates/persons/persons.html',
                 'templates/persons/personsController.js',
                 'templates/persons/personsService.js',
-                'templates/persons/personModel.js',
                 'templates/persons/photoService.js',
                 'templates/menu/menu.html',
                 'css/style.css'
@@ -89,12 +88,12 @@ self.addEventListener('fetch', function (event) {
     if (requestURL.hostname == 'swapi.co') {
         event.respondWith(swapiResponse(event.request));
     }
-    else if(requestURL.hostname == 'api.flickr.com'){
-        event.respondWith(flickrDataResponse(event.request))
-    }
-    else if(/\.staticflickr\.com$/.test(requestURL.hostname)) {
-        event.respondWith(flickrImgResponse(event.request));
-    }
+    //else if(requestURL.hostname == 'api.flickr.com'){
+    //    event.respondWith(flickrDataResponse(event.request))
+    //}
+    //else if(/\.staticflickr\.com$/.test(requestURL.hostname)) {
+    //    event.respondWith(flickrImgResponse(event.request));
+    //}
     //no match? create a promise, check for request in cache, return response
     else {
         event.respondWith(
@@ -140,50 +139,50 @@ function swapiResponse(request) {
     }
 }
 
-function flickrDataResponse(request) {
-    if (navigator.onLine == false) {
-        return caches.match(request);
-    }
-    else {
-        return fetch(request.clone()).then(function(response) {
-            return caches.open(CURRENT_PHOTO.data).then(function(cache) {
+//function flickrDataResponse(request) {
+//    if (navigator.onLine == false) {
+//        return caches.match(request);
+//    }
+//    else {
+//        return fetch(request.clone()).then(function(response) {
+//            return caches.open(CURRENT_PHOTO.data).then(function(cache) {
+//
+//                // We're a stream: if you don't clone, bad things happen
+//                var cacheRequest = request.clone();
+//                var cacheResponse = response.clone();
+//
+//                cache.put(cacheRequest, cacheResponse)
+//                    .then(function () {
+//                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
+//                    })
+//                    .catch(function () {
+//                        console.log("failed to cache");
+//                    });
+//                return response;
+//            });
+//        });
+//    }
+//}
 
-                // We're a stream: if you don't clone, bad things happen
-                var cacheRequest = request.clone();
-                var cacheResponse = response.clone();
-
-                cache.put(cacheRequest, cacheResponse)
-                    .then(function () {
-                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
-                    })
-                    .catch(function () {
-                        console.log("failed to cache");
-                    });
-                return response;
-            });
-        });
-    }
-}
-
-function flickrImgResponse(request) {
-    //check if internet connection, return stored response
-    //if (request.headers.get('statusCode') == null) {
-    return caches.match(request).then(function(response) {
-        if (response) {
-            return response;
-        }
-
-        return fetch(request.clone()).then(function(response) {
-            caches.open(CURRENT_PHOTO.photo).then(function(cache) {
-                cache.put(request, response).then(function() {
-                    console.log('yey img cache');
-                }, function() {
-                    console.log('nay img cache');
-                });
-            });
-
-            return response.clone();
-        });
-    });
-}
+//function flickrImgResponse(request) {
+//    //check if internet connection, return stored response
+//    //if (request.headers.get('statusCode') == null) {
+//    return caches.match(request).then(function(response) {
+//        if (response) {
+//            return response;
+//        }
+//
+//        return fetch(request.clone()).then(function(response) {
+//            caches.open(CURRENT_PHOTO.photo).then(function(cache) {
+//                cache.put(request, response).then(function() {
+//                    console.log('yey img cache');
+//                }, function() {
+//                    console.log('nay img cache');
+//                });
+//            });
+//
+//            return response.clone();
+//        });
+//    });
+//}
 
