@@ -7,9 +7,10 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('swApp', [
     'ionic',
-    'homeService',
-    'photoService',
-    'personsModel'
+    'swApp.controllers',
+    'ngResource',
+    'personServiceModule',
+    'photoServiceModule'
 ])
 
     .run(function ($ionicPlatform) {
@@ -26,7 +27,7 @@ angular.module('swApp', [
         });
     })
 
-    .config(function ($stateProvider, $urlRouterProvider, $logProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $logProvider, $resourceProvider) {
 
         $logProvider.debugEnabled(true);
 
@@ -43,17 +44,17 @@ angular.module('swApp', [
                 templateUrl: "templates/menu/menu.html"
             })
 
-            .state('app.home', {
-                url: '/home',
+            .state('app.persons', {
+                url: '/persons',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/home/home.html',
-                        controller: 'homeCtrl'
+                        templateUrl: 'templates/persons/persons.html',
+                        controller: 'personsCtrl'
                     }
                 }
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/app/home');
+        $urlRouterProvider.otherwise('/app/persons');
 
     });
