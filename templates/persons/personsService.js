@@ -19,8 +19,8 @@ angular.module('personServiceModule', [])
                         persons.forEach(function (entry, index) {
 
                             
-                            var url = photoService.query({text: entry.name});
-                            entry.img = url;
+                            //var url = photoService.query({text: entry.name});
+                            //entry.img = url;
                             persons[index] = new Person(entry);
                         });
                         return persons;
