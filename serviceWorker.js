@@ -60,7 +60,7 @@ self.addEventListener('install', function (event) {
 self.addEventListener('activate', function (event) {
     // we are good to go!
     console.log('activated');
-    console.log(caches);
+    //console.log(caches);
     //check for old caches and remove if updates are in place
     event.waitUntil(
         caches.keys().then(function (cacheNames) {
