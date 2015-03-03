@@ -85,9 +85,9 @@ self.addEventListener('fetch', function (event) {
     var requestURL = new URL(event.request.url);
 
     //check if URL-hostname equals starwars API
-    if (requestURL.hostname == 'swapi.co') {
-        event.respondWith(swapiResponse(event.request));
-    }
+    //if (requestURL.hostname == 'swapi.co') {
+    //    event.respondWith(swapiResponse(event.request));
+    //}
     //else if(requestURL.hostname == 'api.flickr.com'){
     //    event.respondWith(flickrDataResponse(event.request))
     //}
@@ -95,49 +95,49 @@ self.addEventListener('fetch', function (event) {
     //    event.respondWith(flickrImgResponse(event.request));
     //}
     //no match? create a promise, check for request in cache, return response
-    else {
+    //else {
         event.respondWith(
             caches.open(CURRENT_ASSETS.prefetch).then(function(cache) {
-                console.log('fetch, responseWith cache', cache);
-                return fetch(event.request.clone()).then(function(response) {
-                    cache.put(event.request, response.clone());
+                //console.log('fetch, responseWith cache', cache);
+                //return fetch(event.request.clone()).then(function(response) {
+                //    cache.put(event.request, response.clone());
                     return response;
-                });
+                //});
             })
         );
-    }
+    //}
 });
 
-function swapiResponse(request) {
-    console.log('swapiResponse request:', request);
-
-    //check if internet connection, return stored response
-    //if (request.headers.get('statusCode') == null) {
-    if (navigator.onLine == false) {
-        console.log('swapiResponse match:', caches.match(request));
-        return caches.match(request);
-    }
-
-    else {
-        return fetch(request.clone()).then(function (response) {
-            return caches.open(CURRENT_PERSON.person).then(function (cache) {
-
-                // We're a stream: if you don't clone, bad things happen
-                var cacheRequest = request.clone();
-                var cacheResponse = response.clone();
-
-                cache.put(cacheRequest, cacheResponse)
-                    .then(function () {
-                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
-                    })
-                    .catch(function () {
-                        console.log("failed to cache");
-                    });
-                return response;
-            });
-        });
-    }
-}
+//function swapiResponse(request) {
+//    console.log('swapiResponse request:', request);
+//
+//    //check if internet connection, return stored response
+//    //if (request.headers.get('statusCode') == null) {
+//    if (navigator.onLine == false) {
+//        console.log('swapiResponse match:', caches.match(request));
+//        return caches.match(request);
+//    }
+//
+//    else {
+//        return fetch(request.clone()).then(function (response) {
+//            return caches.open(CURRENT_PERSON.person).then(function (cache) {
+//
+//                // We're a stream: if you don't clone, bad things happen
+//                var cacheRequest = request.clone();
+//                var cacheResponse = response.clone();
+//
+//                cache.put(cacheRequest, cacheResponse)
+//                    .then(function () {
+//                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
+//                    })
+//                    .catch(function () {
+//                        console.log("failed to cache");
+//                    });
+//                return response;
+//            });
+//        });
+//    }
+//}
 
 //function flickrDataResponse(request) {
 //    if (navigator.onLine == false) {
