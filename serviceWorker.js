@@ -99,10 +99,10 @@ self.addEventListener('fetch', function (event) {
         event.respondWith(
             caches.open(CURRENT_ASSETS.prefetch).then(function(cache) {
                 //console.log('fetch, responseWith cache', cache);
-                //return fetch(event.request.clone()).then(function(response) {
-                //    cache.put(event.request, response.clone());
+                return fetch(event.request.clone()).then(function(response) {
+                    cache.put(event.request, response.clone());
                     return response;
-                //});
+                });
             })
         );
     //}
