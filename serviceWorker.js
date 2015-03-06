@@ -88,20 +88,20 @@ self.addEventListener('fetch', function (event) {
     if (requestURL.hostname == 'swapi.co') {
         event.respondWith(swapiResponse(event.request));
     }
-    else if(requestURL.hostname == 'api.flickr.com'){
+    else if (requestURL.hostname == 'api.flickr.com') {
         event.respondWith(flickrDataResponse(event.request))
     }
-    else if(/\.staticflickr\.com$/.test(requestURL.hostname)) {
+    else if (/\.staticflickr\.com$/.test(requestURL.hostname)) {
         event.respondWith(flickrImgResponse(event.request));
     }
     //no match? create a promise, check for request in cache, return response
     else {
         event.respondWith(
             //get cache with static assets
-            caches.open(CURRENT_ASSETS.prefetch).then(function(cache) {
+            caches.open(CURRENT_ASSETS.prefetch).then(function (cache) {
                 //console.log('fetch, responseWith cache', cache);
                 //
-                return fetch(event.request.clone()).then(function(response) {
+                return fetch(event.request.clone()).then(function (response) {
                     cache.put(event.request, response.clone());
                     return response;
                 });
@@ -121,21 +121,22 @@ function swapiResponse(request) {
     }
 
     else {
-        //return fetch(request.clone()).then(function (response) {
+        return fetch(request.clone()).then(function (response) {
             return caches.open(CURRENT_PERSON.person).then(function (cache) {
 
                 // We're a stream: if you don't clone, bad things happen
                 return fetch(request.clone()).then(function (response) {
 
 
-                cache.put(request.clone(), response.clone())
-                    .then(function () {
-                        console.log("new swapi response to cache");
-                    })
-                    .catch(function () {
-                        console.log("failed to cache");
-                    });
-                return response;
+                    cache.put(request.clone(), response.clone())
+                        .then(function () {
+                            console.log("new swapi response to cache");
+                        })
+                        .catch(function () {
+                            console.log("failed to cache");
+                        });
+                    return response;
+                });
             });
         });
     }
@@ -146,8 +147,8 @@ function flickrDataResponse(request) {
         return caches.match(request);
     }
     else {
-        return fetch(request.clone()).then(function(response) {
-            return caches.open(CURRENT_PHOTO.data).then(function(cache) {
+        return fetch(request.clone()).then(function (response) {
+            return caches.open(CURRENT_PHOTO.data).then(function (cache) {
 
                 // We're a stream: if you don't clone, bad things happen
                 var cacheRequest = request.clone();
@@ -169,16 +170,16 @@ function flickrDataResponse(request) {
 function flickrImgResponse(request) {
     //check if internet connection, return stored response
     //if (request.headers.get('statusCode') == null) {
-    return caches.match(request).then(function(response) {
+    return caches.match(request).then(function (response) {
         if (response) {
             return response;
         }
 
-        return fetch(request.clone()).then(function(response) {
-            caches.open(CURRENT_PHOTO.photo).then(function(cache) {
-                cache.put(request, response).then(function() {
+        return fetch(request.clone()).then(function (response) {
+            caches.open(CURRENT_PHOTO.photo).then(function (cache) {
+                cache.put(request, response).then(function () {
                     console.log('yey img cache');
-                }, function() {
+                }, function () {
                     console.log('nay img cache');
                 });
             });
