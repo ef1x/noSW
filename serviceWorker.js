@@ -121,7 +121,9 @@ function swapiResponse(request) {
     }
 
     else {
-        return fetch(request.clone()).then(function (response) {
+
+
+        //return fetch(request.clone()).then(function (response) {
             return caches.open(CURRENT_PERSON.person).then(function (cache) {
 
                 // We're a stream: if you don't clone, bad things happen
@@ -137,7 +139,7 @@ function swapiResponse(request) {
                     });
                 return response;
             });
-        });
+        //});
     }
 }
 
