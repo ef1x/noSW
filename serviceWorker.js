@@ -97,8 +97,10 @@ self.addEventListener('fetch', function (event) {
     //no match? create a promise, check for request in cache, return response
     else {
         event.respondWith(
+            //get cache with static assets
             caches.open(CURRENT_ASSETS.prefetch).then(function(cache) {
                 //console.log('fetch, responseWith cache', cache);
+                //
                 return fetch(event.request.clone()).then(function(response) {
                     cache.put(event.request, response.clone());
                     return response;
