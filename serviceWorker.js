@@ -121,25 +121,23 @@ function swapiResponse(request) {
     }
 
     else {
-
-
         //return fetch(request.clone()).then(function (response) {
             return caches.open(CURRENT_PERSON.person).then(function (cache) {
 
                 // We're a stream: if you don't clone, bad things happen
-                var cacheRequest = request.clone();
-                var cacheResponse = response.clone();
+                return fetch(request.clone()).then(function (response) {
 
-                cache.put(cacheRequest, cacheResponse)
+
+                cache.put(request.clone(), response.clone())
                     .then(function () {
-                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
+                        console.log("new swapi response to cache");
                     })
                     .catch(function () {
                         console.log("failed to cache");
                     });
                 return response;
             });
-        //});
+        });
     }
 }
 
