@@ -34,7 +34,6 @@ self.addEventListener('install', function (event) {
     event.waitUntil(
         //cach stuff
         caches.open(CURRENT_ASSETS.prefetch).then(function (cache) {
-            console.log(cache);
             return cache.addAll([
                 'index.html',
                 'js/app.js',
@@ -60,7 +59,6 @@ self.addEventListener('install', function (event) {
 self.addEventListener('activate', function (event) {
     // we are good to go!
     console.log('activate');
-    //console.log(caches);
     //check for old caches and remove if updates are in place
     event.waitUntil(
         caches.keys().then(function (cacheNames) {
@@ -70,7 +68,6 @@ self.addEventListener('activate', function (event) {
                         return;
                     }
                     if (storedCaches.indexOf(cacheName) == -1) {
-                        console.log('cache deleted', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -96,8 +93,12 @@ self.addEventListener('fetch', function (event) {
     }
     //no match? create a promise, check for request in cache, return response
     else {
+        //Cache, falling back to network:
+        //This gives you the "Cache only" behaviour for things in the cache
+        // and the "Network only" behaviour for anything not-cached
+        // (which includes all non-GET requests, as they cannot be cached).
         event.respondWith(
-            caches.match(event.request).then(function(response) {
+            caches.match(event.request).then(function (response) {
                 return response || fetch(event.request);
             })
         );
@@ -105,28 +106,24 @@ self.addEventListener('fetch', function (event) {
 });
 
 function swapiResponse(request) {
-//    console.log('swapiResponse request:', request);
 
-    //check if internet connection, return stored response
-    //if (request.headers.get('statusCode') == null) {
+    //check if internet connection -> return stored response
     if (navigator.onLine == false) {
-        //console.log('swapiResponse match:', caches.match(request));
         return caches.match(request);
     }
-
     else {
-            return caches.open(CURRENT_PERSON.person).then(function (cache) {
-                return cache.match(request).then(function (response) {
-                    console.log('swapi fetch', request.clone());
-                    var fetchPromise = fetch(request.clone()).then(function(networkResponse) {
-                        cache.put(request, networkResponse.clone());
-                        return networkResponse;
-                    });
-                    return response || fetchPromise;
+        //Stale-while-revalidate
+        //if there's a cached version available, use it, but fetch an update for next time.
+        return caches.open(CURRENT_PERSON.person).then(function (cache) {
+            return cache.match(request).then(function (response) {
+                var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
                 });
+                return response || fetchPromise;
+            });
         });
     }
-
 }
 
 function flickrDataResponse(request) {
@@ -134,32 +131,37 @@ function flickrDataResponse(request) {
         return caches.match(request);
     }
     else {
-        //return fetch(request.clone()).then(function (response) {
-            return caches.open(CURRENT_PHOTO.data).then(function (cache) {
-                return cache.match(request).then(function (response) {
-                    console.log('flickr data fetch', request.clone());
-                    var fetchPromise = fetch(request.clone()).then(function(networkResponse) {
-                        cache.put(request, networkResponse.clone());
-                        return networkResponse;
-                    });
-                    return response || fetchPromise;
+        //Stale-while-revalidate
+        //if there's a cached version available, use it, but fetch an update for next time.
+        return caches.open(CURRENT_PHOTO.data).then(function (cache) {
+            return cache.match(request).then(function (response) {
+                var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
                 });
-
+                return response || fetchPromise;
             });
+
+        });
     }
 }
 
 function flickrImgResponse(request) {
-    return caches.open(CURRENT_PHOTO.photo).then(function (cache) {
-        return cache.match(request).then(function (response) {
-            console.log('flickr img fetch', request.clone());
-
-            var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
-                cache.put(request, networkResponse.clone());
-                return networkResponse;
+    if (navigator.onLine == false) {
+        return caches.match(request);
+    }
+    else {
+        //Stale-while-revalidate
+        //if there's a cached version available, use it, but fetch an update for next time.
+        return caches.open(CURRENT_PHOTO.photo).then(function (cache) {
+            return cache.match(request).then(function (response) {
+                var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                });
+                return response || fetchPromise;
             });
-            return response || fetchPromise;
-        });
-    })
+        })
+    }
 }
 
