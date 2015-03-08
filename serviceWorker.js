@@ -98,7 +98,7 @@ self.addEventListener('fetch', function (event) {
     else {
         event.respondWith(
             caches.match(event.request).then(function(response) {
-                return response || fetch(event.request);
+                return response || fetch(event.request, {'mode': 'no-cors'});
             })
         );
     }
@@ -138,7 +138,7 @@ function flickrDataResponse(request) {
             return caches.open(CURRENT_PHOTO.data).then(function (cache) {
                 return cache.match(request).then(function (response) {
                     console.log('flickr data fetch', request.clone());
-                    var fetchPromise = fetch(request.clone()).then(function(networkResponse) {
+                    var fetchPromise = fetch(request.clone(), {'mode': 'no-cors'}).then(function(networkResponse) {
                         cache.put(request, networkResponse.clone());
                         return networkResponse;
                     });
@@ -154,7 +154,7 @@ function flickrImgResponse(request) {
         return cache.match(request).then(function (response) {
             console.log('flickr img fetch', request.clone());
 
-            var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+            var fetchPromise = fetch(request.clone(), {'mode': 'no-cors'}).then(function (networkResponse) {
                 cache.put(request, networkResponse.clone());
                 return networkResponse;
             });
