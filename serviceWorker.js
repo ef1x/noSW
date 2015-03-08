@@ -117,6 +117,7 @@ function swapiResponse(request) {
     else {
             return caches.open(CURRENT_PERSON.person).then(function (cache) {
                 return cache.match(request).then(function (response) {
+                    console.log('swapi fetch', request.clone());
                     var fetchPromise = fetch(request.clone()).then(function(networkResponse) {
                         cache.put(request, networkResponse.clone());
                         return networkResponse;
@@ -136,6 +137,7 @@ function flickrDataResponse(request) {
         //return fetch(request.clone()).then(function (response) {
             return caches.open(CURRENT_PHOTO.data).then(function (cache) {
                 return cache.match(request).then(function (response) {
+                    console.log('flickr data fetch', request.clone());
                     var fetchPromise = fetch(request.clone()).then(function(networkResponse) {
                         cache.put(request, networkResponse.clone());
                         return networkResponse;
@@ -150,6 +152,8 @@ function flickrDataResponse(request) {
 function flickrImgResponse(request) {
     return caches.open(CURRENT_PHOTO.photo).then(function (cache) {
         return cache.match(request).then(function (response) {
+            console.log('flickr img fetch', request.clone());
+
             var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
                 cache.put(request, networkResponse.clone());
                 return networkResponse;
