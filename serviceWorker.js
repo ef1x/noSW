@@ -29,12 +29,11 @@ var storedCaches = [
 
 //second step installing
 self.addEventListener('install', function (event) {
-    console.log('installed');
+    console.log('install');
 
     event.waitUntil(
         //cach stuff
         caches.open(CURRENT_ASSETS.prefetch).then(function (cache) {
-            console.log(cache);
             return cache.addAll([
                 'index.html',
                 'js/app.js',
@@ -59,8 +58,7 @@ self.addEventListener('install', function (event) {
 //third step, ready to use let's go
 self.addEventListener('activate', function (event) {
     // we are good to go!
-    console.log('activated');
-    console.log(caches);
+    console.log('activate');
     //check for old caches and remove if updates are in place
     event.waitUntil(
         caches.keys().then(function (cacheNames) {
@@ -70,7 +68,6 @@ self.addEventListener('activate', function (event) {
                         return;
                     }
                     if (storedCaches.indexOf(cacheName) == -1) {
-                        console.log('cache deleted', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -88,101 +85,83 @@ self.addEventListener('fetch', function (event) {
     if (requestURL.hostname == 'swapi.co') {
         event.respondWith(swapiResponse(event.request));
     }
-    //else if(requestURL.hostname == 'api.flickr.com'){
-    //    event.respondWith(flickrDataResponse(event.request))
-    //}
-    //else if(/\.staticflickr\.com$/.test(requestURL.hostname)) {
-    //    event.respondWith(flickrImgResponse(event.request));
-    //}
+    else if (requestURL.hostname == 'api.flickr.com') {
+        event.respondWith(flickrDataResponse(event.request))
+    }
+    else if (/\.staticflickr\.com$/.test(requestURL.hostname)) {
+        event.respondWith(flickrImgResponse(event.request));
+    }
     //no match? create a promise, check for request in cache, return response
     else {
+        //Cache, falling back to network:
+        //This gives you the "Cache only" behaviour for things in the cache
+        // and the "Network only" behaviour for anything not-cached
+        // (which includes all non-GET requests, as they cannot be cached).
         event.respondWith(
-            caches.open(CURRENT_ASSETS.prefetch).then(function(cache) {
-                console.log('fetch, responseWith cache', cache);
-                return fetch(event.request.clone()).then(function(response) {
-                    cache.put(event.request, response.clone());
-                    return response;
-                });
+            caches.match(event.request).then(function (response) {
+                return response || fetch(event.request);
             })
         );
     }
 });
 
 function swapiResponse(request) {
-    console.log('swapiResponse request:', request);
 
-    //check if internet connection, return stored response
-    //if (request.headers.get('statusCode') == null) {
+    //check if internet connection -> return stored response
     if (navigator.onLine == false) {
-        console.log('swapiResponse match:', caches.match(request));
         return caches.match(request);
     }
-
     else {
-        return fetch(request.clone()).then(function (response) {
-            return caches.open(CURRENT_PERSON.person).then(function (cache) {
-
-                // We're a stream: if you don't clone, bad things happen
-                var cacheRequest = request.clone();
-                var cacheResponse = response.clone();
-
-                cache.put(cacheRequest, cacheResponse)
-                    .then(function () {
-                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
-                    })
-                    .catch(function () {
-                        console.log("failed to cache");
-                    });
-                return response;
+        //Stale-while-revalidate
+        //if there's a cached version available, use it, but fetch an update for next time.
+        return caches.open(CURRENT_PERSON.person).then(function (cache) {
+            return cache.match(request).then(function (response) {
+                var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                });
+                return response || fetchPromise;
             });
         });
     }
 }
 
-//function flickrDataResponse(request) {
-//    if (navigator.onLine == false) {
-//        return caches.match(request);
-//    }
-//    else {
-//        return fetch(request.clone()).then(function(response) {
-//            return caches.open(CURRENT_PHOTO.data).then(function(cache) {
-//
-//                // We're a stream: if you don't clone, bad things happen
-//                var cacheRequest = request.clone();
-//                var cacheResponse = response.clone();
-//
-//                cache.put(cacheRequest, cacheResponse)
-//                    .then(function () {
-//                        console.log("new swapi response to cache", cacheRequest, cacheResponse);
-//                    })
-//                    .catch(function () {
-//                        console.log("failed to cache");
-//                    });
-//                return response;
-//            });
-//        });
-//    }
-//}
+function flickrDataResponse(request) {
+    if (navigator.onLine == false) {
+        return caches.match(request);
+    }
+    else {
+        //Stale-while-revalidate
+        //if there's a cached version available, use it, but fetch an update for next time.
+        return caches.open(CURRENT_PHOTO.data).then(function (cache) {
+            return cache.match(request).then(function (response) {
+                var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                });
+                return response || fetchPromise;
+            });
 
-//function flickrImgResponse(request) {
-//    //check if internet connection, return stored response
-//    //if (request.headers.get('statusCode') == null) {
-//    return caches.match(request).then(function(response) {
-//        if (response) {
-//            return response;
-//        }
-//
-//        return fetch(request.clone()).then(function(response) {
-//            caches.open(CURRENT_PHOTO.photo).then(function(cache) {
-//                cache.put(request, response).then(function() {
-//                    console.log('yey img cache');
-//                }, function() {
-//                    console.log('nay img cache');
-//                });
-//            });
-//
-//            return response.clone();
-//        });
-//    });
-//}
+        });
+    }
+}
+
+function flickrImgResponse(request) {
+    if (navigator.onLine == false) {
+        return caches.match(request);
+    }
+    else {
+        //Stale-while-revalidate
+        //if there's a cached version available, use it, but fetch an update for next time.
+        return caches.open(CURRENT_PHOTO.photo).then(function (cache) {
+            return cache.match(request).then(function (response) {
+                var fetchPromise = fetch(request.clone()).then(function (networkResponse) {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                });
+                return response || fetchPromise;
+            });
+        })
+    }
+}
 
