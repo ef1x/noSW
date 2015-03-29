@@ -25,6 +25,7 @@ angular.module('swApp', [
                 StatusBar.styleDefault();
             }
         });
+
     })
 
     .config(function ($stateProvider, $urlRouterProvider, $logProvider, $resourceProvider) {
